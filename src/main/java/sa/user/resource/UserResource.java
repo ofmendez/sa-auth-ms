@@ -8,11 +8,14 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.ResponseBuilder;
 import java.net.URI;
 import java.util.List;
 
 @Path("/users")
 public class UserResource {
+
+    ResponseBuilder response;
 
     @Context
     UriInfo uriInfo;
@@ -27,27 +30,36 @@ public class UserResource {
 
     @GET
     @Path("{id}")
-    public User getUserById(@PathParam("id") int id) {
-        return userService.getUserById(id);
+    public Response getUserById(@PathParam("id") int id) {
+        User user = userService.getUserById(id);
+        response = Response.status(Response.Status.OK);
+        response.entity(user);
+        return response.build();
     }
 
     @POST
     public Response createUser(User user) {
-        userService.createUser(user);
-        return Response.status(Response.Status.CREATED).build();
+        User createdUser = userService.createUser(user);
+        response = Response.status(Response.Status.CREATED);
+        response.entity(createdUser);
+        return response.build();
     }
 
     @PUT
     @Path("{id}")
     public Response updateUser(@PathParam("id") int id, User user) {
-        userService.updateUser(id, user);
-        return Response.status(Response.Status.NO_CONTENT).build();
+        User updatedUser = userService.updateUser(id, user);
+        response = Response.status(Response.Status.OK);
+        response.entity(updatedUser);
+        return response.build();
     }
 
     @DELETE
     @Path("{id}")
     public Response deleteUser(@PathParam("id") int id) {
-        userService.deleteUser(id);
-        return Response.status(Response.Status.OK).build();
+        int deletedUserId = userService.deleteUser(id);
+        response = Response.status(Response.Status.OK);
+        response.entity(deletedUserId);
+        return response.build();
     }
 }

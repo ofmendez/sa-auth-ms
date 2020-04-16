@@ -22,8 +22,10 @@ public class UserService {
         return entityManager.find(User.class, id);
     }
 
-    public void createUser(User user) {
+    public User createUser(User user) {
         entityManager.persist(user);
+        entityManager.flush();
+        return user;
     }
 
     public User updateUser(int id, User user) {
@@ -32,11 +34,13 @@ public class UserService {
         userToUpdate.setLastName(user.getLastName());
         userToUpdate.setUsername(user.getUsername());
         userToUpdate.setPassword(user.getPassword());
-        return entityManager.merge(userToUpdate);
+        entityManager.merge(userToUpdate);
+        return entityManager.find(User.class, id);
     }
 
-    public void deleteUser(int id) {
+    public int deleteUser(int id) {
         User userToDelete = entityManager.find(User.class, id);
         entityManager.remove(userToDelete);
+        return id;
     }
 }
